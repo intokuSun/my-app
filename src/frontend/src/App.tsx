@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import KLineModal from './KLineModal'
+import CorrelationView from './CorrelationView'
 
 interface Quote {
   name: string
@@ -50,6 +51,7 @@ export default function App() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
   const [selected, setSelected] = useState<Quote | null>(null)
+  const [view, setView] = useState<'dashboard' | 'correlation'>('dashboard')
 
   const fetchData = async () => {
     try {
@@ -70,6 +72,10 @@ export default function App() {
     return () => clearInterval(timer)
   }, [])
 
+  if (view === 'correlation') {
+    return <CorrelationView onBack={() => setView('dashboard')} />
+  }
+
   return (
     <div className="min-h-screen bg-gray-900 p-6">
       <div className="max-w-7xl mx-auto">
@@ -77,6 +83,7 @@ export default function App() {
           <h1 className="text-2xl font-bold text-white">🌍 全球市场行情</h1>
           <div className="text-gray-400 text-sm flex items-center gap-2">
             {data && `更新: ${new Date(data.updated_at).toLocaleTimeString()}`}
+            <button onClick={() => setView('correlation')} className="px-3 py-1 bg-purple-600 hover:bg-purple-500 text-white rounded text-xs">📈 相关性分析</button>
             <button onClick={fetchData} className="px-3 py-1 bg-blue-600 hover:bg-blue-500 text-white rounded text-xs">刷新</button>
           </div>
         </div>
